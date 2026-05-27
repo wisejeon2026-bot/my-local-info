@@ -67,7 +67,7 @@ const InfoCard = ({ item, isEvent }: { item: InfoItem, isEvent: boolean }) => {
         </div>
       </div>
       
-      <Link href={`/detail/${item.id}`} className="mt-auto inline-flex items-center justify-center w-full py-3 px-4 bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-xl text-sm font-bold transition-all duration-300">
+      <Link href="/blog" className="mt-auto inline-flex items-center justify-center w-full py-3 px-4 bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-xl text-sm font-bold transition-all duration-300">
         자세히 보기
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -87,10 +87,14 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <span className="text-3xl animate-bounce" style={{ animationDuration: '3s' }}>🌸</span>
-            <h1 className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600 tracking-tight">
+            <Link href="/" className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600 tracking-tight">
               성남시 생활 정보
-            </h1>
+            </Link>
           </div>
+          <nav className="flex space-x-6">
+            <Link href="/" className="text-orange-600 font-bold border-b-2 border-orange-600 transition-colors">홈</Link>
+            <Link href="/blog" className="text-gray-600 hover:text-orange-600 font-bold transition-colors">블로그</Link>
+          </nav>
         </div>
       </header>
 
