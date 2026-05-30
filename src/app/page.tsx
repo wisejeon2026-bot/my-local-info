@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import localInfo from '../../public/data/local-info.json';
+import AdBanner from '../components/AdBanner';
 
 // SVG Icons
 const CalendarIcon = () => (
@@ -34,8 +35,53 @@ interface InfoItem {
 }
 
 const InfoCard = ({ item, isEvent }: { item: InfoItem, isEvent: boolean }) => {
+  // 날짜 형식 파싱 및 가공 헬퍼
+  const getEventDates = (dateStr: string) => {
+    const today = new Date().toISOString().split('T')[0];
+    if (!dateStr) return { start: today, end: today };
+    const ymdRegex = /\d{4}-\d{2}-\d{2}/g;
+    const matches = dateStr.match(ymdRegex);
+    if (matches && matches.length >= 2) {
+      return { start: matches[0], end: matches[1] };
+    } else if (matches && matches.length === 1) {
+      return { start: matches[0], end: "상시" };
+    }
+    return { start: today, end: "상시" };
+  };
+
+  const dates = getEventDates(item.date);
+
+  const jsonLd = isEvent
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Event",
+        "name": item.name,
+        "startDate": dates.start,
+        "endDate": dates.end,
+        "location": {
+          "@type": "Place",
+          "name": item.location,
+          "address": item.location
+        },
+        "description": item.summary
+      }
+    : {
+        "@context": "https://schema.org",
+        "@type": "GovernmentService",
+        "name": item.name,
+        "description": item.summary,
+        "provider": {
+          "@type": "GovernmentOrganization",
+          "name": item.location || "성남시"
+        }
+      };
+
   return (
     <div className="group bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className={`absolute top-0 left-0 w-2 h-full ${isEvent ? 'bg-gradient-to-b from-orange-400 to-red-400' : 'bg-gradient-to-b from-amber-400 to-yellow-500'}`}></div>
       
       <div className="flex justify-between items-start mb-4">
@@ -94,6 +140,7 @@ export default function Home() {
           <nav className="flex space-x-6">
             <Link href="/" className="text-orange-600 font-bold border-b-2 border-orange-600 transition-colors">홈</Link>
             <Link href="/blog" className="text-gray-600 hover:text-orange-600 font-bold transition-colors">블로그</Link>
+            <Link href="/about" className="text-gray-600 hover:text-orange-600 font-bold transition-colors">소개</Link>
           </nav>
         </div>
       </header>
@@ -132,6 +179,9 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        {/* Google AdSense Ad Banner */}
+        <AdBanner />
 
         {/* Benefits Section */}
         <section>
