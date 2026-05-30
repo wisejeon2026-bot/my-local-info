@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - main
+  schedule:
+    # 매일 아침 한국 시간 7시(UTC 22시)에 실행
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   deploy:
@@ -11,6 +18,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -20,6 +29,35 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      # 스케줄 또는 수동 실행 시 공공데이터 가져오기 스크립트 실행
+      - name: Fetch Public Data
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: node scripts/fetch-public-data.js
+        env:
+          PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      # 스케줄 또는 수동 실행 시 블로그 글 생성 스크립트 실행
+      - name: Generate Blog Post
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: node scripts/generate-blog-post.js
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      # 스케줄 또는 수동 실행 시 변경사항 커밋 및 푸시
+      - name: Commit and Push changes
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "자동 업데이트: 공공데이터 수집 및 블로그 글 생성"
+            git push
+          else
+            echo "변경사항이 없어 커밋 및 푸시를 생략합니다."
+          fi
 
       - name: Build project
         run: npm run build
