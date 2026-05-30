@@ -61,6 +61,8 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          NEXT_PUBLIC_ADSENSE_ID: ${{ secrets.NEXT_PUBLIC_ADSENSE_ID }}
 
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy out --project-name=my-local-info
