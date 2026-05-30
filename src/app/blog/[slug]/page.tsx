@@ -7,6 +7,7 @@ import { Metadata } from 'next';
 import { getPostData, getSortedPostsData } from '../../../lib/posts';
 import localInfo from '../../../../public/data/local-info.json';
 import AdBanner from '../../../components/AdBanner';
+import CoupangBanner from '../../../components/CoupangBanner';
 
 export async function generateStaticParams() {
   const posts = getSortedPostsData();
@@ -129,6 +130,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           {/* Google AdSense Ad Banner */}
           <AdBanner />
+
+          {/* Coupang Partners Ad Banner */}
+          <CoupangBanner />
 
           {/* E-E-A-T Information */}
           <div className="mt-12 pt-8 border-t border-gray-100 space-y-4 text-sm text-gray-500 bg-orange-50/50 p-6 rounded-2xl border border-orange-100/50">
