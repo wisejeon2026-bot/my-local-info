@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 import { Metadata } from 'next';
 import { getPostData, getSortedPostsData } from '../../../lib/posts';
 import localInfo from '../../../../public/data/local-info.json';
-import AdBanner from '../../../../components/AdBanner';
+import AdBanner from '../../../components/AdBanner';
 
 export async function generateStaticParams() {
   const posts = getSortedPostsData();

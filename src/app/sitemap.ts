@@ -2,6 +2,8 @@ import { MetadataRoute } from 'next';
 import fs from 'fs';
 import path from 'path';
 
+export const dynamic = 'force-static';
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://my-local-info.pages.dev';
 
